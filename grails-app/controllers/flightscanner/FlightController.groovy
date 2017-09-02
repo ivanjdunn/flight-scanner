@@ -9,7 +9,9 @@ class FlightController {
 	
     def index() { 
 		
+		println params.departure
 		
-		render "hello world"
+		
+		render params
 	}
 }
