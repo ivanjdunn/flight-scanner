@@ -66,6 +66,10 @@ grails:
         encoding: UTF-8
 
 ---
+server:
+  contextPath: '/flightscanner' 
+
+---
 hibernate:
     cache:
         queries: false
