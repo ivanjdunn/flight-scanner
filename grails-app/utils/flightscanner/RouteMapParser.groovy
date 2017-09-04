@@ -1,0 +1,5 @@
+package flightscanner
+
+class RouteMapParser {
+
+}
