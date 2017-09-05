@@ -16,7 +16,8 @@ class RouteMapService {
 
 	@CompileDynamic
 	def allRoutes() {
-
+		
+		List routeListing = []
 		RestBuilder rest = new RestBuilder()
 		String url = "https://api.ryanair.com/core/3/routes"
 
@@ -27,7 +28,20 @@ class RouteMapService {
 		}
 
 		null*/
-
+		
+		Route routeInstance		
+		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
+			
+			restResponse.json.each{ 
+		         
+		        routeObject -> routeInstance = RouteMapParser.routeFromJsonElement(routeObject) 
+		        routeListing << routeInstance		    
+		    }				
+		}
+		
+		return routeListing
 	}
+	
+	
 
 }
