@@ -37,7 +37,7 @@ class ScheduleMapParser {
     static CurrentFlight currentFlightFromJSONElement(JSONElement json) {
         CurrentFlight currentFlight = new CurrentFlight()
       
-        /*if ( json.days ) {
+        /*if ( json.days.day ) {
             currentFlight.day = json.days.day as Integer
         }*/
 
