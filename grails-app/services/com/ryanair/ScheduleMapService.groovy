@@ -38,7 +38,7 @@ class ScheduleMapService {
 	@CompileDynamic
     CurrentFlight currentFlight() {
 	    RestBuilder rest = new RestBuilder()
-	    String url = "https://api.ryanair.com/timetable/3/schedules/DUB/WRO/years/2017/months/10"
+	    String url = "https://api.ryanair.com/timetable/3/schedules/DUB/STN/years/2017/months/10"
 		
 	    RestResponse restResponse = rest.get(url)
 	

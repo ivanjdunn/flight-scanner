@@ -16,16 +16,20 @@ class ScheduleMapParser {
 	static flightFromJsonElement(JSONElement json) {
 		Flight flight = new Flight()
 
-		if ( json.number ) {
-			flight.number = json.number
+		if ( json.flights.number ) {
+			flight.number = json.flights.number
 		}
 		
-		if ( json.departureTime ) {
-			flight.departureTime = json.departureTime
+		if ( json.flights.departureTime ) {
+			flight.departureTime = json.flights.departureTime
 		}
 		
-		if ( json.arrivalTime ) {
-			flight.arrivalTime = json.arrivalTime
+		if ( json.flights.arrivalTime ) {
+			flight.arrivalTime = json.flights.arrivalTime
+		}
+		
+		if ( json.day ) {
+			flight.day = json.day
 		}
 		
 		return flight
@@ -33,19 +37,18 @@ class ScheduleMapParser {
 	
 	
 	
-	 @CompileDynamic
+	@CompileDynamic
     static CurrentFlight currentFlightFromJSONElement(JSONElement json) {
         CurrentFlight currentFlight = new CurrentFlight()
       
-        /*if ( json.days.day ) {
-            currentFlight.day = json.days.day as Integer
-        }*/
+        currentFlight.month = json.month
 
         if ( json.days.flights ) {
             currentFlight.flightList = []
-            for ( Object obj : json.days.flights ) {
+            for ( Object obj : json.days ) {           	
+            	
                 Flight flight = flightFromJsonElement(obj)
-                currentFlight.flightList << flight
+                currentFlight.flightList << flight                
             }
         }
         currentFlight

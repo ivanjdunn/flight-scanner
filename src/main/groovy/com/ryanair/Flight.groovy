@@ -4,7 +4,7 @@ class Flight {
 	
 	
 	//TODO update types	
-	//Integer day
+	String day
 	String number
 	String departureTime
 	String arrivalTime
