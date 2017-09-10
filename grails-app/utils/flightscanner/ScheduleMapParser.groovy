@@ -13,26 +13,27 @@ class ScheduleMapParser {
 	
 	
 	@CompileDynamic
-	static flightFromJsonElement(JSONElement json) {
-		Flight flight = new Flight()
-
-		if ( json.flights.number ) {
-			flight.number = json.flights.number
+	static flightFromJsonElement(def dayOfFlight, JSONElement json) {		
+		Flight flight = new Flight()	
+		
+		if ( json.number ) {
+			flight.number = json.number
 		}
 		
-		if ( json.flights.departureTime ) {
-			flight.departureTime = json.flights.departureTime
+		if ( json.departureTime ) {
+			flight.departureTime = json.departureTime
 		}
 		
-		if ( json.flights.arrivalTime ) {
-			flight.arrivalTime = json.flights.arrivalTime
+		if ( json.arrivalTime ) {
+			flight.arrivalTime = json.arrivalTime
 		}
 		
-		if ( json.day ) {
-			flight.day = json.day
-		}
+		if ( dayOfFlight ) {
+			flight.day = dayOfFlight
+		}	
 		
-		return flight
+		return flight	
+		
 	}
 	
 	
@@ -43,14 +44,28 @@ class ScheduleMapParser {
       
         currentFlight.month = json.month
 
-        if ( json.days.flights ) {
+        if ( json.days.flights ) {        	
+        	
             currentFlight.flightList = []
-            for ( Object obj : json.days ) {           	
+            
+            // iterates for each day sending a list of flights and its day 
+            for ( Object obj : json.days ) { 
             	
-                Flight flight = flightFromJsonElement(obj)
-                currentFlight.flightList << flight                
-            }
+            	def dayOfFlight = obj.day            	
+            	def listOfFlights = obj.flights            	
+            	
+            	// iterate over all flight for each day
+            	listOfFlights.each{
+            		
+            		Flight flight = flightFromJsonElement(dayOfFlight, it)
+                    currentFlight.flightList << flight           		
+            		
+            	}           	          	
+                               
+            }           
+            
         }
+        
         currentFlight
     }	
 
