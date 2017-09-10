@@ -1,11 +1,9 @@
 package com.ryanair
 
-class Flight {
+class Flight {	
 	
-	
-	//TODO update types	
-	String day
-	String number
+	Integer day
+	Integer number
 	String departureTime
 	String arrivalTime
 

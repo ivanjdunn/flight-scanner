@@ -17,7 +17,7 @@ class ScheduleMapParser {
 		Flight flight = new Flight()	
 		
 		if ( json.number ) {
-			flight.number = json.number
+			flight.number = json.number as Integer
 		}
 		
 		if ( json.departureTime ) {
@@ -29,7 +29,7 @@ class ScheduleMapParser {
 		}
 		
 		if ( dayOfFlight ) {
-			flight.day = dayOfFlight
+			flight.day = dayOfFlight as Integer
 		}	
 		
 		return flight	
