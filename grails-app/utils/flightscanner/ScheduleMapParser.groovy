@@ -6,6 +6,7 @@ import com.ryanair.Flight
 import flightscanner.ScheduleMapParser
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import java.time.LocalTime
 
 @CompileStatic
 class ScheduleMapParser {
@@ -21,11 +22,11 @@ class ScheduleMapParser {
 		}
 		
 		if ( json.departureTime ) {
-			flight.departureTime = json.departureTime
+			flight.departureTime = LocalTime.parse( json.departureTime)
 		}
 		
 		if ( json.arrivalTime ) {
-			flight.arrivalTime = json.arrivalTime
+			flight.arrivalTime = LocalTime.parse( json.arrivalTime )
 		}
 		
 		if ( dayOfFlight ) {
