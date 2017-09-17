@@ -7,10 +7,12 @@ import grails.converters.*
 class FlightController {
 	static responseFormats = ['json', 'xml']
 	
-    def index() { 
-		
-		println params.departure
-		
+    def index( String departure, String arrival, String departureDateTime, String arrivalDateTime ) { 		
+			
+		println departure
+		println arrival
+		println departureDateTime
+		println arrivalDateTime
 		
 		render params
 	}
