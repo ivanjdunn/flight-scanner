@@ -1,15 +1,20 @@
 package flightscanner
 
 
+import com.ryanair.RouteMapService
 import grails.rest.*
-import grails.converters.*
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 
+
+@CompileStatic
 class FlightController {
 	static responseFormats = ['json', 'xml']
 			
 			
-	def routeMapService
+	RouteMapService routeMapService
 	
+	@CompileDynamic
     def index( String departure, String arrival, String departureDateTime, String arrivalDateTime ) { 		
 			
 		def doesRouteExist = routeMapService.currentRoute( departure, arrival )		
@@ -22,7 +27,6 @@ class FlightController {
 		}else {
 			
 			render "Sorry we have no flights goint to: " + arrival
-		}
-		
+		}		
 	}
 }

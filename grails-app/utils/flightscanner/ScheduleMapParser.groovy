@@ -9,8 +9,7 @@ import groovy.transform.CompileStatic
 import java.time.LocalTime
 
 @CompileStatic
-class ScheduleMapParser {
-	
+class ScheduleMapParser {	
 	
 	
 	@CompileDynamic
@@ -35,8 +34,7 @@ class ScheduleMapParser {
 		
 		return flight	
 		
-	}
-	
+	}	
 	
 	
 	@CompileDynamic

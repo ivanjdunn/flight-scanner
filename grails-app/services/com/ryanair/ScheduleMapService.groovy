@@ -3,12 +3,14 @@ package com.ryanair
 import grails.plugins.rest.client.RestBuilder
 import grails.plugins.rest.client.RestResponse
 import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import flightscanner.ScheduleMapParser
 
+@CompileStatic
 class ScheduleMapService {
 
     
-
+	@CompileDynamic
 	def simpleScheduleLister() {
 		
 		List scheduleListing = []
@@ -31,7 +33,6 @@ class ScheduleMapService {
 		return scheduleListing
 		
 	}
-	
 	
 	
 	

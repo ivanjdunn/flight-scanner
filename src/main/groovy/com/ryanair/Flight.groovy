@@ -1,7 +1,9 @@
 package com.ryanair
 
+import groovy.transform.CompileStatic
 import java.time.LocalTime
 
+@CompileStatic
 class Flight {	
 	
 	Integer day
