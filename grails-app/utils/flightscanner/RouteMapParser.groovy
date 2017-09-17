@@ -48,19 +48,25 @@ public class RouteMapParser {
 	
 	
 	@CompileDynamic
-    static CurrentRoute currentRouteFromJSONElement(JSONElement json) {
-        CurrentRoute currentRoute = new CurrentRoute()           
+    static CurrentRoute currentRouteFromJSONElement(JSONElement json, String departureAirport, String arrivalAirport) {
+        CurrentRoute currentRoute = new CurrentRoute()         		
 
         if ( json ) {        	
         	
             currentRoute.routeList = []
             
             // iterates for each route
-            for ( Object obj : json ) {             	
+            for ( Object obj : json ) {            	
+            	
+            	// potentially identify interconnected flights here
+            	// obj.airportFrom == departureAirport && obj.airportTo == arrivalAirport
+            	// currently get all routes leaving from departureAirport
+            	if ( obj.airportFrom == departureAirport ) {           		    		
             		
-	    		Route route = routeFromJsonElement(obj)
-	    		currentRoute.routeList << route	                               
-            } 
+		    		Route route = routeFromJsonElement(obj)
+		    		currentRoute.routeList << route	    
+            	}
+           } 
       }
         
         return currentRoute

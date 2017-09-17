@@ -6,14 +6,23 @@ import grails.converters.*
 
 class FlightController {
 	static responseFormats = ['json', 'xml']
+			
+			
+	def routeMapService
 	
     def index( String departure, String arrival, String departureDateTime, String arrivalDateTime ) { 		
 			
-		println departure
-		println arrival
-		println departureDateTime
-		println arrivalDateTime
+		def doesRouteExist = routeMapService.currentRoute( departure, arrival )		
 		
-		render params
+		if (doesRouteExist.routeList) {
+			
+			//render params	
+			render "the route is available"
+			
+		}else {
+			
+			render "Sorry the route you require is not available"
+		}
+		
 	}
 }

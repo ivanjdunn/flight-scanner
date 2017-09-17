@@ -13,7 +13,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class RouteMapService {
 
-
+	/**
+	 * TODO delete if not used
+	 * @return
+	 */
 	@CompileDynamic
 	def allRoutes() {
 		
@@ -40,14 +43,14 @@ class RouteMapService {
 	
 	
 	@CompileDynamic
-    CurrentRoute currentRoute() {
+    CurrentRoute currentRoute( String departureAirport, String arrivalAirport ) {
 	    RestBuilder rest = new RestBuilder()
 	    String url = "https://api.ryanair.com/core/3/routes"
 		
 	    RestResponse restResponse = rest.get(url)	
 	    
 	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-	        return RouteMapParser.currentRouteFromJSONElement(restResponse.json)
+	        return RouteMapParser.currentRouteFromJSONElement(restResponse.json, departureAirport, arrivalAirport)
 	    }
 	    null
     }
