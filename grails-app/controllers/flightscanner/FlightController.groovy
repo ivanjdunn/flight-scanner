@@ -17,11 +17,11 @@ class FlightController {
 		if (doesRouteExist.routeList) {
 			
 			//render params	
-			render "the route is available"
+			render "Their are potential routes available"
 			
 		}else {
 			
-			render "Sorry the route you require is not available"
+			render "Sorry we have no flights goint to: " + arrival
 		}
 		
 	}
