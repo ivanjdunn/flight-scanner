@@ -1,5 +1,6 @@
 package flightscanner
 
+import com.ryanair.CurrentFlight
 import com.ryanair.CurrentRoute
 import com.ryanair.Route
 
@@ -42,6 +43,28 @@ public class RouteMapParser {
 		}		
 		
 		return route
-	}		
+	}
+	
+	
+	
+	@CompileDynamic
+    static CurrentRoute currentRouteFromJSONElement(JSONElement json) {
+        CurrentRoute currentRoute = new CurrentRoute()           
+
+        if ( json ) {        	
+        	
+            currentRoute.routeList = []
+            
+            // iterates for each route
+            for ( Object obj : json ) {             	
+            		
+	    		Route route = routeFromJsonElement(obj)
+	    		currentRoute.routeList << route	                               
+            } 
+      }
+        
+        return currentRoute
+    }
+	
 
 }

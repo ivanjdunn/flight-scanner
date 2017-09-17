@@ -21,13 +21,7 @@ class RouteMapService {
 		RestBuilder rest = new RestBuilder()
 		String url = "https://api.ryanair.com/core/3/routes"
 
-		RestResponse restResponse = rest.get(url)
-
-		/*if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-			return RouteMapParser.currentRoutesFromJSONElement(restResponse.json)
-		}
-
-		null*/
+		RestResponse restResponse = rest.get(url)		
 		
 		Route routeInstance		
 		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
@@ -41,6 +35,22 @@ class RouteMapService {
 		
 		return routeListing
 	}
+	
+	
+	
+	
+	@CompileDynamic
+    CurrentRoute currentRoute() {
+	    RestBuilder rest = new RestBuilder()
+	    String url = "https://api.ryanair.com/core/3/routes"
+		
+	    RestResponse restResponse = rest.get(url)	
+	    
+	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
+	        return RouteMapParser.currentRouteFromJSONElement(restResponse.json)
+	    }
+	    null
+    }
 	
 	
 
