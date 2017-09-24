@@ -17,16 +17,13 @@ class FlightController {
 	@CompileDynamic
     def index( String departure, String arrival, String departureDateTime, String arrivalDateTime ) { 		
 			
-		def doesRouteExist = routeMapService.currentRoute( departure, arrival )		
+		def listOfPotentialFlights = routeMapService.currentRoute( departure, arrival )					
+				
+		def directFlight = routeMapService.getDirectFlight(listOfPotentialFlights.routeList, departure, arrival)
+				
+		def listOfInterconnectedFlights = routeMapService.getInterconnectedFlights(listOfPotentialFlights.routeList, departure, arrival)		
 		
-		if (doesRouteExist.routeList) {
-			
-			//render params	
-			render "Their are potential routes available"
-			
-		}else {
-			
-			render "Sorry we have no flights goint to: " + arrival
-		}		
+		render "There is a direct flight available: " + directFlight + '<br> <br>' + "indirect flights:  " + listOfInterconnectedFlights				
+				
 	}
 }

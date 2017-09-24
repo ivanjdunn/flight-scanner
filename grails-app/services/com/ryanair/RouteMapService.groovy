@@ -11,36 +11,7 @@ import groovy.transform.CompileStatic
 
 
 @CompileStatic
-class RouteMapService {
-
-	/**
-	 * TODO delete if not used
-	 * @return
-	 */
-	@CompileDynamic
-	def allRoutes() {
-		
-		List routeListing = []
-		RestBuilder rest = new RestBuilder()
-		String url = "https://api.ryanair.com/core/3/routes"
-
-		RestResponse restResponse = rest.get(url)		
-		
-		Route routeInstance		
-		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-			
-			restResponse.json.each{ 
-		         
-		        routeObject -> routeInstance = RouteMapParser.routeFromJsonElement(routeObject) 
-		        routeListing << routeInstance		    
-		    }				
-		}
-		
-		return routeListing
-	}
-	
-	
-	
+class RouteMapService {	
 	
 	@CompileDynamic
     CurrentRoute currentRoute( String departureAirport, String arrivalAirport ) {
@@ -56,5 +27,22 @@ class RouteMapService {
     }
 	
 	
+	@CompileDynamic
+	def getDirectFlight(def potentialFlights, def departure, def arrival) {
+		
+		// should return 1 or none
+		def directFlight = potentialFlights.find{ it.airportFrom == departure && it.airportTo == arrival}
+	
+	}	
+	
+	
+	@CompileDynamic
+	def getInterconnectedFlights(def potentialFlights, def departure, def arrival) {
+		
+		def allFlightsToDestination = potentialFlights.findAll{ it.airportTo == arrival}	
+		
+		def indirect = potentialFlights.findAll{ it.airportFrom == departure && it.airportTo in allFlightsToDestination.airportFrom }		
+		
+	}
 
 }

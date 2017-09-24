@@ -58,10 +58,8 @@ public class RouteMapParser {
             // iterates for each route
             for ( Object obj : json ) {            	
             	
-            	// potentially identify interconnected flights here
-            	// obj.airportFrom == departureAirport && obj.airportTo == arrivalAirport
-            	// currently get all routes goint to that airport that includes direct and potential indirect
-            	if ( obj.airportTo == arrivalAirport ) {           		    		
+            	// identify direct and potential interconnected flights here            	
+            	if ( obj.airportTo == arrivalAirport || obj.airportFrom == departureAirport ) {           		    		
             		
 		    		Route route = routeFromJsonElement(obj)
 		    		currentRoute.routeList << route	    
@@ -71,6 +69,5 @@ public class RouteMapParser {
         
         return currentRoute
     }
-	
 
 }
