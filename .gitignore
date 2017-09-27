@@ -11,3 +11,4 @@ build/
 .classpath
 bin/
 grails-app/assets/vendor
+node_modules

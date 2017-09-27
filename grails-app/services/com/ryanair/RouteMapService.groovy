@@ -13,10 +13,13 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class RouteMapService {	
 	
+	String ryanairUrl = "https://api.ryanair.com/core/3/routes"	
+	
 	@CompileDynamic
     CurrentRoute currentRoute( String departureAirport, String arrivalAirport ) {
-	    RestBuilder rest = new RestBuilder()
-	    String url = "https://api.ryanair.com/core/3/routes"
+	    RestBuilder rest = new RestBuilder()	    
+	    //String url = "https://api.ryanair.com/core/3/routes"
+	    String url = "${ryanairUrl}"
 		
 	    RestResponse restResponse = rest.get(url)	
 	    
