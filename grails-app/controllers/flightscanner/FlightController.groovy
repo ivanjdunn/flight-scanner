@@ -2,6 +2,7 @@ package flightscanner
 
 
 import com.ryanair.RouteMapService
+import com.ryanair.ScheduleMapService
 import grails.rest.*
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -13,17 +14,17 @@ class FlightController {
 			
 			
 	RouteMapService routeMapService
+	ScheduleMapService scheduleMapService
 	
 	@CompileDynamic
     def index( String departure, String arrival, String departureDateTime, String arrivalDateTime ) { 		
 			
-		def listOfPotentialFlights = routeMapService.currentRoute( departure, arrival )					
-				
-		def directFlight = routeMapService.getDirectFlight(listOfPotentialFlights.routeList, departure, arrival)
-				
-		def listOfInterconnectedFlights = routeMapService.getInterconnectedFlights(listOfPotentialFlights.routeList, departure, arrival)		
+		def routes = routeMapService.currentRoute( departure, arrival )						
+		def flights = routeMapService.getPotentialFlights(routes.routeList, departure, arrival)
 		
-		render "There is a direct flight available: " + directFlight + '<br> <br>' + "indirect flights:  " + listOfInterconnectedFlights				
+		def schedulesForPotentialFlights = scheduleMapService.potentialFlights(flights, departureDateTime, arrivalDateTime)
+		
+		render "total objects: " + schedulesForPotentialFlights.size()			
 				
 	}
 }

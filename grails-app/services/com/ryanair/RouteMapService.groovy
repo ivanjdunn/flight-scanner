@@ -17,39 +17,31 @@ class RouteMapService {
 	
 	@CompileDynamic
     CurrentRoute currentRoute( String departureAirport, String arrivalAirport ) {
-	    RestBuilder rest = new RestBuilder()	    
-	    //String url = "https://api.ryanair.com/core/3/routes"
-	    String url = "${ryanairUrl}"
-		
+	    RestBuilder rest = new RestBuilder()	 
+	    
+	    String url = "${ryanairUrl}"		
 	    RestResponse restResponse = rest.get(url)	
 	    
 	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
 	        return RouteMapParser.currentRouteFromJSONElement(restResponse.json, departureAirport, arrivalAirport)
 	    }
 	    null
-    }
-	
-	
-	@CompileDynamic
-	def getDirectFlight(def potentialFlights, def departure, def arrival) {
-		
-		// should return 1 or none
-		def directFlight = potentialFlights.find{ it.airportFrom == departure && it.airportTo == arrival}
-	
-	}	
-	
+    }	
 	
 	@CompileDynamic
-	def getInterconnectedFlights(def potentialFlights, def departure, def arrival) {
+	def getPotentialFlights(def potentialFlights, def departure, def arrival) {
 		
-		def allFlightsToDestination = potentialFlights.findAll{ it.airportTo == arrival }		 
+		def flights = []		
+		def allFlightsToDestination = potentialFlights.findAll{ it.airportTo == arrival }	
 		
+		def directFlight = potentialFlights.findAll{ it.airportFrom == departure && it.airportTo == arrival }		
 		def leg1 = potentialFlights.findAll{ it.airportFrom == departure && it.airportTo in allFlightsToDestination.airportFrom }	
-		
 		def leg2 = potentialFlights.findAll{ it.airportFrom in leg1.airportTo && it.airportTo == arrival }	
 		
-		leg1 + leg2
+		flights << directFlight << leg1 << leg2
+		return flights.flatten() // TODO potentially handle null
 		
 	}
+
 
 }
