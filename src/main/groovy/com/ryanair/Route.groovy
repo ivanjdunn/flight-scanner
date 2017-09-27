@@ -14,5 +14,4 @@ class Route {
 	String seasonalRoute	
 	String group
 
-
 }

@@ -11,35 +11,9 @@ class ScheduleMapService {
 
     
 	@CompileDynamic
-	def simpleScheduleLister() {
-		
-		List scheduleListing = []
-		RestBuilder rest = new RestBuilder()
-		String url = "https://api.ryanair.com/timetable/3/schedules/DUB/WRO/years/2017/months/10"
-
-		RestResponse restResponse = rest.get(url)
-		
-		def scheduleInstance		
-		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {				
-					
-			restResponse.json.days.flights.each{ 
-				
-				scheduleObject -> scheduleInstance = ScheduleMapParser.flightFromJsonElement(scheduleObject) 
-				scheduleListing << scheduleInstance
-			}
-		    			
-		}		
-		
-		return scheduleListing
-		
-	}
-	
-	
-	
-	@CompileDynamic
     CurrentFlight currentFlight() {
 	    RestBuilder rest = new RestBuilder()
-	    String url = "https://api.ryanair.com/timetable/3/schedules/DUB/STN/years/2017/months/10"
+	    String url = "https://api.ryanair.com/timetable/3/schedules/DUB/STN/years/2017/months/10"	    			  
 		
 	    RestResponse restResponse = rest.get(url)
 	
@@ -49,5 +23,59 @@ class ScheduleMapService {
 	    }
 	    null
     }
+	
+	
+	
+	@CompileDynamic
+	List<CurrentFlight> potentialFlights(def directRoute, def indirectRoute, def departureTime, def arrivalTime) {
+		
+		// pass in all the routes - direct and indirect
+		
+		
+		def schedule = []
+		String url
+				
+		url = urlBuilder(directRoute, 2017, 10)
+		schedule << restBuilder(url)
+		
+		indirectRoute.each{	routeInstance ->
+			
+			// build up an end-point URL for each route	
+			url = urlBuilder(routeInstance, 2017, 10)
+			schedule << restBuilder(url)	
+			
+		}
+		
+		return schedule
+		
+		
+	}
+	
+	
+	@CompileDynamic
+	def restBuilder(def url) {
+		
+		RestBuilder rest = new RestBuilder()				
+		RestResponse restResponse = rest.get(url)		
+	    
+	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
+	    	return ScheduleMapParser.currentFlightFromJSONElement(restResponse.json)
+	    }
+		null
+		
+	}
+	
+	
+	@CompileDynamic
+	def urlBuilder(def route, def flightYear, def flightMonth) {
+		
+		String departure = route.airportFrom
+		String arrival = route.airportTo
+		
+		
+		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"		
+		
+		
+	}
 	
 }
