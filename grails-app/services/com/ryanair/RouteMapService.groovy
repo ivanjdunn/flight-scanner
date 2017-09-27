@@ -42,9 +42,13 @@ class RouteMapService {
 	@CompileDynamic
 	def getInterconnectedFlights(def potentialFlights, def departure, def arrival) {
 		
-		def allFlightsToDestination = potentialFlights.findAll{ it.airportTo == arrival}	
+		def allFlightsToDestination = potentialFlights.findAll{ it.airportTo == arrival }		 
 		
-		def indirect = potentialFlights.findAll{ it.airportFrom == departure && it.airportTo in allFlightsToDestination.airportFrom }		
+		def leg1 = potentialFlights.findAll{ it.airportFrom == departure && it.airportTo in allFlightsToDestination.airportFrom }	
+		
+		def leg2 = potentialFlights.findAll{ it.airportFrom in leg1.airportTo && it.airportTo == arrival }	
+		
+		leg1 + leg2
 		
 	}
 

@@ -29,9 +29,7 @@ class ScheduleMapService {
 	@CompileDynamic
 	List<CurrentFlight> potentialFlights(def directRoute, def indirectRoute, def departureTime, def arrivalTime) {
 		
-		// pass in all the routes - direct and indirect
-		
-		
+			
 		def schedule = []
 		String url
 				
