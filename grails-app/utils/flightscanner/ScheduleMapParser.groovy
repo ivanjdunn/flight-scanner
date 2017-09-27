@@ -38,10 +38,14 @@ class ScheduleMapParser {
 	
 	
 	@CompileDynamic
-    static CurrentFlight currentFlightFromJSONElement(JSONElement json) {
+    static CurrentFlight currentFlightFromJSONElement(JSONElement json, def route) {
         CurrentFlight currentFlight = new CurrentFlight()
       
         currentFlight.month = json.month
+        currentFlight.departureAirport = route.airportFrom
+        currentFlight.arrivalAirport = route.airportTo 
+        
+        
 
         if ( json.days.flights ) {        	
         	

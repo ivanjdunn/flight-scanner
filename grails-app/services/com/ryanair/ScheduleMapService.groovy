@@ -36,13 +36,13 @@ class ScheduleMapService {
 		String url
 				
 		url = urlBuilder(directRoute, 2017, 10)
-		schedule << restBuilder(url)
+		schedule << restBuilder(url, directRoute)
 		
 		indirectRoute.each{	routeInstance ->
 			
 			// build up an end-point URL for each route	
 			url = urlBuilder(routeInstance, 2017, 10)
-			schedule << restBuilder(url)	
+			schedule << restBuilder(url, routeInstance)	
 			
 		}
 		
@@ -53,13 +53,13 @@ class ScheduleMapService {
 	
 	
 	@CompileDynamic
-	def restBuilder(def url) {
+	def restBuilder(def url, route) {
 		
 		RestBuilder rest = new RestBuilder()				
 		RestResponse restResponse = rest.get(url)		
 	    
 	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-	    	return ScheduleMapParser.currentFlightFromJSONElement(restResponse.json)
+	    	return ScheduleMapParser.currentFlightFromJSONElement(restResponse.json, route)
 	    }
 		null
 		

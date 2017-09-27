@@ -7,6 +7,8 @@ class CurrentFlight {
 	
 	
 	String month
+	String departureAirport
+	String arrivalAirport
 	List<Flight> flightList
 
 }
