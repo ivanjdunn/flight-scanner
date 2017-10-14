@@ -5,7 +5,7 @@ import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
 
-class RouteMapServiceSpec extends Specification implements ServiceUnitTest<RouteMapService> {	
+class RouteServiceSpec extends Specification implements ServiceUnitTest<RouteService> {	
 	
 def "Routes endpoint is called once and returns 200 OK response"() {	
 	
@@ -28,10 +28,10 @@ def "Routes endpoint is called once and returns 200 OK response"() {
 		service.ryanairUrl = ersatz.httpUrl
 		
 		when: 
-		def currentRoute = service.currentRoute(departureAirport, arrivalAirport)
+		def availableRoute = service.availableRoute(departureAirport, arrivalAirport)
 		
 		then: 
-		println currentRoute
+		println availableRoute
 		ersatz.verify()
 		
 		

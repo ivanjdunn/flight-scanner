@@ -4,14 +4,14 @@ import grails.plugins.rest.client.RestBuilder
 import grails.plugins.rest.client.RestResponse
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import flightscanner.ScheduleMapParser
+import flightscanner.ScheduleParser
 
 @CompileStatic
-class ScheduleMapService {
+class ScheduleService {
 	
 	
 	@CompileDynamic
-	List<CurrentFlight> potentialFlights(def potentialRoutes, def departureTime, def arrivalTime) {		
+	List<AvailableFlight> availableSchedule(def potentialRoutes, def departureTime, def arrivalTime) {		
 			
 		def schedule = []		
 		
@@ -34,7 +34,7 @@ class ScheduleMapService {
 		RestResponse restResponse = rest.get(url)		
 	    
 	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-	    	return ScheduleMapParser.currentFlightFromJSONElement(restResponse.json, route)
+	    	return ScheduleParser.availableFlightFromJSONElement(restResponse.json, route)
 	    }
 		null
 		

@@ -1,7 +1,7 @@
 package flightscanner
 
-import com.ryanair.CurrentFlight
-import com.ryanair.CurrentRoute
+import com.ryanair.AvailableFlight
+import com.ryanair.AvailableRoute
 import com.ryanair.Route
 
 import groovy.transform.CompileDynamic
@@ -11,7 +11,7 @@ import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONElement
 
 @CompileStatic
-public class RouteMapParser {
+public class RouteParser {
 
 
 	@CompileDynamic
@@ -48,12 +48,13 @@ public class RouteMapParser {
 	
 	
 	@CompileDynamic
-    static CurrentRoute currentRouteFromJSONElement(JSONElement json, String departureAirport, String arrivalAirport) {
-        CurrentRoute currentRoute = new CurrentRoute()         		
+    static AvailableRoute availableRouteFromJSONElement(JSONElement json, String departureAirport, String arrivalAirport) {
+		
+        AvailableRoute availableRoute = new AvailableRoute()         		
 
         if ( json ) {        	
         	
-            currentRoute.routeList = []
+        	availableRoute.routeList = []
             
             // iterates for each route
             for ( Object obj : json ) {            	
@@ -62,12 +63,12 @@ public class RouteMapParser {
             	if ( obj.airportTo == arrivalAirport || obj.airportFrom == departureAirport ) {           		    		
             		
 		    		Route route = routeFromJsonElement(obj)
-		    		currentRoute.routeList << route	    
+		    		availableRoute.routeList << route	    
             	}
            } 
       }
         
-        return currentRoute
+        return availableRoute
     }
 
 }

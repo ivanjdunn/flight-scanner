@@ -1,15 +1,15 @@
 package flightscanner
 
 import org.grails.web.json.JSONElement
-import com.ryanair.CurrentFlight
+import com.ryanair.AvailableFlight
 import com.ryanair.Flight
-import flightscanner.ScheduleMapParser
+import flightscanner.ScheduleParser
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import java.time.LocalTime
 
 @CompileStatic
-class ScheduleMapParser {	
+class ScheduleParser {	
 	
 	
 	@CompileDynamic
@@ -38,18 +38,19 @@ class ScheduleMapParser {
 	
 	
 	@CompileDynamic
-    static CurrentFlight currentFlightFromJSONElement(JSONElement json, def route) {
-        CurrentFlight currentFlight = new CurrentFlight()
+    static AvailableFlight availableFlightFromJSONElement(JSONElement json, def route) {
+        
+		AvailableFlight availableFlight = new AvailableFlight()
       
-        currentFlight.month = json.month
-        currentFlight.departureAirport = route.airportFrom
-        currentFlight.arrivalAirport = route.airportTo 
+		availableFlight.month = json.month
+		availableFlight.departureAirport = route.airportFrom
+		availableFlight.arrivalAirport = route.airportTo 
         
         
 
         if ( json.days.flights ) {        	
         	
-            currentFlight.flightList = []
+        	availableFlight.flightList = []
             
             // iterates for each day sending a list of flights and its day 
             for ( Object obj : json.days ) { 
@@ -61,7 +62,7 @@ class ScheduleMapParser {
             	listOfFlights.each{
             		
             		Flight flight = flightFromJsonElement(dayOfFlight, it)
-                    currentFlight.flightList << flight           		
+            		availableFlight.flightList << flight           		
             		
             	}           	          	
                                
@@ -69,7 +70,7 @@ class ScheduleMapParser {
             
         }
         
-        currentFlight
+		availableFlight
     }	
 
 }

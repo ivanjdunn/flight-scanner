@@ -3,7 +3,7 @@ package com.ryanair
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class CurrentFlight {
+class AvailableFlight {
 	
 	
 	String month

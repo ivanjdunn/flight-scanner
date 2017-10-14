@@ -3,7 +3,7 @@ package com.ryanair
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class CurrentRoute {	
+class AvailableRoute {	
 
 	List<Route> routeList
 
