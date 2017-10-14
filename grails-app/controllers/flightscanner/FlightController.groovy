@@ -24,7 +24,8 @@ class FlightController {
 		
 		def availableSchedules = scheduleService.availableSchedule(potentialRoutes, departureDateTime, arrivalDateTime)
 		
-		render "POTENTIAL Flights: " + availableSchedules.flightList		
+		render "Potential Flights: " + availableSchedules.flightList	
+			
 				
 	}
 }
