@@ -1,11 +1,15 @@
 package flightscanner
 
 
+import com.ryanair.AvailableRoute
 import com.ryanair.RouteService
 import com.ryanair.ScheduleService
 import grails.rest.*
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
+import java.time.LocalDateTime
+
+import org.hibernate.validator.internal.util.privilegedactions.GetClassLoader
 
 
 @CompileStatic
@@ -17,15 +21,16 @@ class FlightController {
 	ScheduleService scheduleService
 	
 	@CompileDynamic
-    def index( String departure, String arrival, String departureDateTime, String arrivalDateTime ) { 		
-			
-		def availableRoutes = routeService.availableRoute( departure, arrival )				
-		def potentialRoutes = routeService.potentialRoute(availableRoutes.routeList, departure, arrival)
+    def index( String departure, String arrival ) { 
 		
-		def availableSchedules = scheduleService.availableSchedule(potentialRoutes, departureDateTime, arrivalDateTime)
-		
-		render "Potential Flights: " + availableSchedules.flightList	
+		LocalDateTime departureDateTime = LocalDateTime.parse( params.departureDateTime )
+		LocalDateTime arrivalDateTime = LocalDateTime.parse( params.arrivalDateTime )
 			
+		AvailableRoute availableRoutes = routeService.availableRoute( departure, arrival )		
+		List potentialRoutes = routeService.potentialRoute( availableRoutes.routeList, departure, arrival )				
+		List availableSchedules = scheduleService.availableSchedule( potentialRoutes, departureDateTime, arrivalDateTime )
+				
+		render "Potential Flights: " + availableSchedules.flightList			
 				
 	}
 }

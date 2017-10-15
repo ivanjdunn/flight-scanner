@@ -5,6 +5,7 @@ import grails.plugins.rest.client.RestResponse
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import flightscanner.ScheduleParser
 
@@ -13,12 +14,11 @@ class ScheduleService {
 	
 	
 	@CompileDynamic
-	List<AvailableFlight> availableSchedule(List<AvailableRoute> potentialRoutes, String earliestDeparture, String latestArrival) {		
+	List<AvailableFlight> availableSchedule(List<AvailableRoute> potentialRoutes, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {		
 			
 		List schedule = []					
 						
-		LocalDate earliestDepartureDate = LocalDate.parse(earliestDeparture, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-		//LocalDate latestArrivalDate = LocalDate.parse(latestArrival, DateTimeFormatter.ISO_LOCAL_DATE_TIME)		
+		LocalDate earliestDepartureDate = earliestDeparture.toLocalDate()
 		
 		potentialRoutes.each{ routeInstance ->
 			
@@ -33,7 +33,7 @@ class ScheduleService {
 	
 	
 	@CompileDynamic
-	def restBuilder(def url, route) {
+	def restBuilder(def url, def route) {
 		
 		RestBuilder rest = new RestBuilder()				
 		RestResponse restResponse = rest.get(url)		
