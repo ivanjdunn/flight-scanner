@@ -29,11 +29,20 @@ class ScheduleService {
 		
 		return schedule		
 		
-	}
+	}	
 	
 	
-	@CompileDynamic
-	def restBuilder(def url, def route) {
+	String urlBuilder(Route route, Integer flightYear, Integer flightMonth) {
+		
+		String departure = route.airportFrom
+		String arrival = route.airportTo		
+		
+		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"			
+		
+	}	
+	
+	
+	def restBuilder(String url, Route route) {
 		
 		RestBuilder rest = new RestBuilder()				
 		RestResponse restResponse = rest.get(url)		
@@ -44,16 +53,5 @@ class ScheduleService {
 		null
 		
 	}
-	
-	
-	@CompileDynamic
-	def urlBuilder(def route, def flightYear, def flightMonth) {
-		
-		String departure = route.airportFrom
-		String arrival = route.airportTo		
-		
-		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"			
-		
-	}	
 	
 }

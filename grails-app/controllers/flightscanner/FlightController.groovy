@@ -1,6 +1,7 @@
 package flightscanner
 
 
+import com.ryanair.Airport
 import com.ryanair.AvailableRoute
 import com.ryanair.RouteService
 import com.ryanair.ScheduleService
@@ -21,13 +22,16 @@ class FlightController {
 	ScheduleService scheduleService
 	
 	@CompileDynamic
-    def index( String departure, String arrival ) { 
+    def index() { 
 		
 		LocalDateTime departureDateTime = LocalDateTime.parse( params.departureDateTime )
 		LocalDateTime arrivalDateTime = LocalDateTime.parse( params.arrivalDateTime )
-			
-		AvailableRoute availableRoutes = routeService.availableRoute( departure, arrival )		
-		List potentialRoutes = routeService.potentialRoute( availableRoutes.routeList, departure, arrival )				
+		
+		Airport departureAirport = new Airport( params.departure )
+		Airport arrivalAirport = new Airport ( params.arrival )		
+					
+		AvailableRoute availableRoutes = routeService.availableRoute( departureAirport, arrivalAirport )		
+		List potentialRoutes = routeService.potentialRoute( availableRoutes.routeList, departureAirport, arrivalAirport )				
 		List availableSchedules = scheduleService.availableSchedule( potentialRoutes, departureDateTime, arrivalDateTime )
 				
 		render "Potential Flights: " + availableSchedules.flightList			

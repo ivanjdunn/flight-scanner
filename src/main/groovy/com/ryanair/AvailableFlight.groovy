@@ -3,8 +3,7 @@ package com.ryanair
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class AvailableFlight {
-	
+class AvailableFlight {	
 	
 	String month
 	String departureAirport
