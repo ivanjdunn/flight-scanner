@@ -10,11 +10,13 @@ class FlightSelectorService {
 	
 	
 
-    def flightSelector(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {    	    	
+    def selectedFlights(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {    	    	
     	
     	// get direct flights
-    	// get everything at specific day
-    	// between start and end times
+    	// get everything between start and end times	
+		// build up direct and indirect flights	
+		
+		availableSchedule
 
     }
 }

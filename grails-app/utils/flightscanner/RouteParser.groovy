@@ -29,46 +29,46 @@ public class RouteParser {
 		if ( json.connectingAirport ) {
 			route.connectingAirport = json.connectingAirport
 		}
-		
+
 		if ( json.newRoute ) {
 			route.newRoute = json.newRoute
 		}
-		
+
 		if ( json.seasonalRoute ) {
 			route.seasonalRoute = json.seasonalRoute
 		}
-		
+
 		if ( json.group ) {
 			route.group = json.group
-		}		
-		
+		}
+
 		return route
 	}
-	
-	
-	
+
+
+
 	@CompileDynamic
-    static AvailableRoute availableRouteFromJSONElement(JSONElement json, String departureAirport, String arrivalAirport) {
-		
-        AvailableRoute availableRoute = new AvailableRoute()         		
+	static AvailableRoute availableRouteFromJSONElement(JSONElement json, String departureAirport, String arrivalAirport) {
 
-        if ( json ) {        	
-        	
-        	availableRoute.routeList = []
-            
-            // iterates for each route
-            for ( Object obj : json ) {            	
-            	
-            	// identify direct and potential interconnected flights here            	
-            	if ( obj.airportTo == arrivalAirport || obj.airportFrom == departureAirport ) {           		    		
-            		
-		    		Route route = routeFromJsonElement(obj)
-		    		availableRoute.routeList << route	    
-            	}
-           } 
-      }
-        
-        return availableRoute
-    }
+		AvailableRoute availableRoute = new AvailableRoute()
 
+		if ( json ) {
+
+			availableRoute.routeList = []
+
+			// iterates for each route
+			for ( Object obj : json ) {
+
+				// identify direct and potential interconnected flights here
+				if ( obj.airportTo == arrivalAirport || obj.airportFrom == departureAirport ) {
+
+					Route route = routeFromJsonElement(obj)
+					availableRoute.routeList << route
+				}
+			}
+		}
+
+		return availableRoute
+	}
+	
 }

@@ -11,47 +11,47 @@ import flightscanner.ScheduleParser
 
 @CompileStatic
 class ScheduleService {
-	
-	
+
+
 	@CompileDynamic
-	List<AvailableFlight> availableSchedule(List<AvailableRoute> potentialRoutes, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {		
-			
-		List schedule = []					
-						
+	List<AvailableFlight> availableSchedule(List<AvailableRoute> potentialRoutes, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {
+
+		List schedule = []
+
 		LocalDate earliestDepartureDate = earliestDeparture.toLocalDate()
-		
+
 		potentialRoutes.each{ routeInstance ->
-			
-			// build up an end-point URL for each route	//TODO work on arrival dates the differ in months and years.
+
+			// build up an end-point URL for each route	for day-of-interest
 			String url = urlBuilder(routeInstance, earliestDepartureDate.getYear(), earliestDepartureDate.getMonthValue())
-			schedule << restBuilder(url, routeInstance)				
+			schedule << restBuilder(url, routeInstance, earliestDepartureDate.getDayOfMonth())
 		}
-		
-		return schedule		
-		
-	}	
-	
-	
-	String urlBuilder(Route route, Integer flightYear, Integer flightMonth) {
-		
-		String departure = route.airportFrom
-		String arrival = route.airportTo		
-		
-		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"			
-		
-	}	
-	
-	
-	def restBuilder(String url, Route route) {
-		
-		RestBuilder rest = new RestBuilder()				
-		RestResponse restResponse = rest.get(url)		
-	    
-	    if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-	    	return ScheduleParser.availableFlightFromJSONElement(restResponse.json, route)
-	    }
-		null
-		
+
+		return schedule
+
 	}
-	
+
+
+	String urlBuilder(Route route, Integer flightYear, Integer flightMonth) {
+
+		String departure = route.airportFrom
+		String arrival = route.airportTo
+
+		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"
+
+	}
+
+
+	def restBuilder(String url, Route route, def dayOfInterest) {
+
+		RestBuilder rest = new RestBuilder()
+		RestResponse restResponse = rest.get(url)
+
+		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
+			return ScheduleParser.availableFlightFromJSONElement(restResponse.json, route, dayOfInterest)
+		}
+		null
+
+	}
+
 }

@@ -6,7 +6,8 @@ import spock.lang.Specification
 
 
 class RouteServiceSpec extends Specification implements ServiceUnitTest<RouteService> {	
-	
+
+/*	
 def "Routes endpoint is called once and returns 200 OK response"() {	
 	
 	given: 
@@ -39,6 +40,7 @@ def "Routes endpoint is called once and returns 200 OK response"() {
 		ersatz.stop()
 		
 	}
+*/
 	
 	
 }
