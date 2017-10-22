@@ -27,7 +27,7 @@ class ScheduleService {
 			schedule << restBuilder(url, routeInstance, earliestDepartureDate.getDayOfMonth())
 		}
 
-		return schedule
+		return schedule - null
 
 	}
 

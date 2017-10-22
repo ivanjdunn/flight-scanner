@@ -38,7 +38,7 @@ class FlightController {
 
 		def selectedFlights = flightSelectorService.selectedFlights(availableSchedules, departureDateTime, arrivalDateTime)
 
-		render "Potential Flights: " + selectedFlights.flightList
+		render "Potential Flights: " + selectedFlights
 
 	}
 }
