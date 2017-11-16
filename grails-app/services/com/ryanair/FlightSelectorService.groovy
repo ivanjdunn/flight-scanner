@@ -15,7 +15,7 @@ class FlightSelectorService {
 		// get direct flights
 		List directFlights = availableSchedule.findAll{ it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode()  }
 
-		myFlights(directFlights)
+		myFlights( directFlights, earliestDeparture, latestArrival )
 
 		// get everything between start and end times
 		// build up direct and indirect flights
@@ -26,8 +26,7 @@ class FlightSelectorService {
 
 	}
 
-	def myFlights(def flights){
-
+	def myFlights( def flights, def earliestDeparture, def latestArrival ){
 
 		new StringWriter().with { w ->
 			def json = new groovy.json.StreamingJsonBuilder(w)
@@ -39,12 +38,15 @@ class FlightSelectorService {
 				flight.flightList.each{
 
 					def time = it
+					// customer time boundaries
+					if (time?.departureTime.isAfter(earliestDeparture.toLocalTime()) && time?.arrivalTime.isBefore(latestArrival.toLocalTime())){
 
-					legs{
-						departureAirport flight?.departureAirport
-						arrivalAirport flight?.arrivalAirport
-						departureDateTime time?.departureTime.toString()
-						arrivalDateTime time?.arrivalTime.toString()
+						legs{
+							departureAirport flight?.departureAirport
+							arrivalAirport flight?.arrivalAirport
+							departureDateTime time?.departureTime.toString()
+							arrivalDateTime time?.arrivalTime.toString()
+						}
 					}
 
 				}
@@ -55,34 +57,4 @@ class FlightSelectorService {
 		}
 
 	}
-
-
-
-	def myTest(){
-
-
-		new StringWriter().with { w ->
-			def builder = new groovy.json.StreamingJsonBuilder(w)
-			builder.people {
-				person {
-					firstName 'Tim'
-					lastName 'Yates'
-					// Named arguments are valid values for objects too
-					address(
-							city: 'Manchester',
-							country: 'UK',
-							zip: 'M1 2AB',
-							)
-					living true
-					eyes 'left', 'right'
-				}
-			}
-
-			w
-		}
-	}
-
-
-
-
 }
