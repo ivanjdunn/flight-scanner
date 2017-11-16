@@ -1,6 +1,7 @@
 package com.ryanair
 
 import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.List
 
 import grails.gorm.transactions.Transactional
@@ -14,7 +15,6 @@ class FlightSelectorService {
 
 		// get direct flights
 		List directFlights = availableSchedule.findAll{ it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode()  }
-
 		myFlights( directFlights, earliestDeparture, latestArrival )
 
 		// get everything between start and end times
@@ -38,14 +38,14 @@ class FlightSelectorService {
 				flight.flightList.each{
 
 					def time = it
-					// customer time boundaries
+					// customer provided time boundaries
 					if (time?.departureTime.isAfter(earliestDeparture.toLocalTime()) && time?.arrivalTime.isBefore(latestArrival.toLocalTime())){
 
 						legs{
 							departureAirport flight?.departureAirport
 							arrivalAirport flight?.arrivalAirport
-							departureDateTime time?.departureTime.toString()
-							arrivalDateTime time?.arrivalTime.toString()
+							departureDateTime LocalDate.now().atTime(time?.departureTime).toString()
+							arrivalDateTime LocalDate.now().atTime(time?.arrivalTime).toString()
 						}
 					}
 
