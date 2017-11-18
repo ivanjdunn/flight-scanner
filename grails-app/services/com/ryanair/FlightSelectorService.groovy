@@ -10,23 +10,17 @@ import grails.gorm.transactions.Transactional
 class FlightSelectorService {
 
 
-
 	def selectedFlights(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival, Airport departureAirport, Airport arrivalAirport) {
 
 		// get direct flights
 		List directFlights = availableSchedule.findAll{ it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode()  }
-		myFlights( directFlights, earliestDeparture, latestArrival )
-
-		// get everything between start and end times
-		// build up direct and indirect flights
-
-		//availableSchedule
-
-		//myFlights(availableSchedule)
+		jsonFlightBuilder( directFlights, earliestDeparture, latestArrival )
 
 	}
 
-	def myFlights( def flights, def earliestDeparture, def latestArrival ){
+
+
+	def jsonFlightBuilder( List flights, LocalDateTime earliestDeparture, LocalDateTime latestArrival ){
 
 		new StringWriter().with { w ->
 			def json = new groovy.json.StreamingJsonBuilder(w)
@@ -57,4 +51,36 @@ class FlightSelectorService {
 		}
 
 	}
+
+
+	def alternativeJsonResonse ( List flights, LocalDateTime earliestDeparture, LocalDateTime latestArrival ) {
+
+		new StringWriter().with { w ->
+			def jsonBuilder = new groovy.json.StreamingJsonBuilder(w)
+
+			jsonBuilder flights, { def flight ->
+
+				jsonBuilder(
+						flight.flightList.collect {
+							def time = it
+							[
+								stops: 0,
+								legs : [
+									departureAirport: flight?.departureAirport,
+									arrivalAirport: flight?.arrivalAirport,
+									departureDateTime: LocalDate.now().atTime(time?.departureTime).toString(),
+									arrivalDateTime: LocalDate.now().atTime(time?.arrivalTime).toString()
+
+								]
+							]
+						}
+						)
+			}
+
+
+			return w.toString()
+		}
+
+	}
+
 }
