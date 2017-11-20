@@ -41,5 +41,31 @@ class RouteServiceSpec extends Specification implements ServiceUnitTest<RouteSer
 
     }
 
+
+    def "validate potentialRoute() method returns expected objects"(){
+
+        given: "List of Routes"
+        def routeList = []
+        routeList << (new Route(airportFrom:"DUB", airportTo: "WRO"))
+        routeList << (new Route(airportFrom:"STN", airportTo: "WRO"))
+        routeList << (new Route(airportFrom:"DUB", airportTo: "STN"))
+        routeList << (new Route(airportFrom:"PMO", airportTo: "WRO")) //Not of interest
+        routeList << (new Route(airportFrom:"GNB", airportTo: "BLQ")) //Not of interest
+
+        and: "A departure and arrival Airport"
+        Airport departureAirport = new Airport("DUB")
+        Airport arrivalAirport = new Airport("WRO")
+
+
+        when: "Route-Service potentialRoute() method is called"
+        def returnedList = service.potentialRoute( routeList, departureAirport, arrivalAirport )
+
+        then: "The returned list has 3 potential flights"
+        returnedList.size() == 3
+        returnedList[0].airportFrom == "DUB"
+        returnedList[0].airportTo == "WRO"
+
+    }
+
 }
 
