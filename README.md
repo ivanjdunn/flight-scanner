@@ -13,10 +13,11 @@
 1. Parse URL Parameters as LocalDateTime, and Airport Objects
 2. Consume Third Party Route APIs
 * Consume Routes API using groovy RestBuilder
-* Identify Routes matching Airport of Interest
-* Parse Routes response into groovy classes
-* Add Route Objects to a List of available routes for the Airports of Interest
+* Identify Routes matching Airports of interest
+* Parse Routes response into groovy classes (POGO's)
+* Add Route Objects to a List of available routes for the Airports of interest
 * Further reduce the Routes identifying direct and potential indirect routes
+* Implement Unit test for Step 2
 
 3. Consume Third Party Schedule API
 * Build the end-point Schedule URL for each potential route using the departureDateTime to derive the Year and Month parameters
