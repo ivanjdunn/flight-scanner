@@ -6,12 +6,9 @@ import com.ryanair.AvailableRoute
 import com.ryanair.RouteService
 import com.ryanair.ScheduleService
 import com.ryanair.FlightSelectorService
-import grails.rest.*
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import java.time.LocalDateTime
-
-import org.hibernate.validator.internal.util.privilegedactions.GetClassLoader
 
 
 @CompileStatic
