@@ -20,7 +20,7 @@ class ScheduleParser {
 		}
 
 		if ( json.departureTime ) {
-			flight.departureTime = LocalTime.parse( json.departureTime)
+			flight.departureTime = LocalTime.parse( json.departureTime )
 		}
 
 		if ( json.arrivalTime ) {
@@ -39,38 +39,42 @@ class ScheduleParser {
 	@CompileDynamic
 	static AvailableFlight availableFlightFromJSONElement(JSONElement json, def route, def dayOfInterest) {
 
-		AvailableFlight availableFlight = new AvailableFlight()
+		if ( json.days ) {
 
-		availableFlight.month = json.month
-		availableFlight.departureAirport = route.airportFrom
-		availableFlight.arrivalAirport = route.airportTo
-
-
-		if ( json.days.flights ) {
-
-			availableFlight.flightList = []
-
-			// iterates for each day sending a list of flights and its day
+			// iterate over each day
 			for ( Object obj : json.days ) {
 
+				// e.g. day: 22
 				def dayOfFlight = obj.day
 				def listOfFlights = obj.flights
 
-				// iterate over all flights for the day-of-interest
+				// Flights may not occur on the day of Interest
 				if(dayOfFlight == dayOfInterest){
-					listOfFlights.each{
 
-						Flight flight = flightFromJsonElement( dayOfFlight, it )
+					AvailableFlight availableFlight = new AvailableFlight()
+
+					availableFlight.month = json.month
+					availableFlight.departureAirport = route.airportFrom
+					availableFlight.arrivalAirport = route.airportTo
+
+					availableFlight.flightList = []
+
+					listOfFlights.each{ flightList ->
+
+						Flight flight = flightFromJsonElement( dayOfFlight, flightList )
 						availableFlight.flightList << flight
 
 					}
+
+					return availableFlight
+
 				}
 
 			}
 
 		}
 
-		availableFlight
+
 	}
 
 }
