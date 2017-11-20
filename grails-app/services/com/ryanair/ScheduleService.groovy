@@ -25,13 +25,23 @@ class ScheduleService {
 			String url = urlBuilder(routeInstance, earliestDepartureDate.getYear(), earliestDepartureDate.getMonthValue())
 			schedule << restBuilder(url, routeInstance, earliestDepartureDate.getDayOfMonth())
 		}
-
-		println schedule
-
+		// e.g. DUB - PIS is an example of null ( this is a valid Route but there is no schedule )
 		return schedule - null
 
 	}
 
+
+	def restBuilder(String url, Route route, int dayOfInterest) {
+
+		RestBuilder rest = new RestBuilder()
+		RestResponse restResponse = rest.get(url)
+
+		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
+			return ScheduleParser.availableFlightFromJSONElement(restResponse.json, route, dayOfInterest)
+		}
+		null
+
+	}
 
 	private static String urlBuilder(Route route, Integer flightYear, Integer flightMonth) {
 
@@ -41,19 +51,6 @@ class ScheduleService {
 		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"
 
 		return url
-
-	}
-
-
-	def restBuilder(String url, Route route, Integer dayOfInterest) {
-
-		RestBuilder rest = new RestBuilder()
-		RestResponse restResponse = rest.get(url)
-
-		if ( restResponse.statusCode.value() == 200 && restResponse.json ) {
-			return ScheduleParser.availableFlightFromJSONElement(restResponse.json, route, dayOfInterest)
-		}
-		null
 
 	}
 
