@@ -41,3 +41,4 @@
 ./gradlew assemble
 
 
+Example endpoint: http://localhost:8080/flightscanner/interconnections?departure=DUB&arrival=STN&departureDateTime=2017-12-22T07:00&arrivalDateTime=2017-12-22T17:00
