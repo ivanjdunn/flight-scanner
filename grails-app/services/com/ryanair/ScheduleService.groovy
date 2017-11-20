@@ -6,7 +6,6 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import flightscanner.ScheduleParser
 
 @CompileStatic
@@ -14,7 +13,7 @@ class ScheduleService {
 
 
 	@CompileDynamic
-	List<AvailableFlight> availableSchedule(List<AvailableRoute> potentialRoutes, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {
+	List<AvailableFlight> availableSchedule( List<AvailableRoute> potentialRoutes, LocalDateTime earliestDeparture ) {
 
 		List schedule = []
 
@@ -32,12 +31,14 @@ class ScheduleService {
 	}
 
 
-	String urlBuilder(Route route, Integer flightYear, Integer flightMonth) {
+	private static String urlBuilder(Route route, Integer flightYear, Integer flightMonth) {
 
 		String departure = route.airportFrom
 		String arrival = route.airportTo
 
 		String url = "https://api.ryanair.com/timetable/3/schedules/${departure}/${arrival}/years/${flightYear}/months/${flightMonth}"
+
+		return url
 
 	}
 

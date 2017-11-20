@@ -34,7 +34,7 @@ class FlightController {
 
 		AvailableRoute availableRoutes = routeService.availableRoute( departureAirport, arrivalAirport )
 		List potentialRoutes = routeService.potentialRoute( availableRoutes.routeList, departureAirport, arrivalAirport )
-		List availableSchedules = scheduleService.availableSchedule( potentialRoutes, departureDateTime, arrivalDateTime )
+		List availableSchedules = scheduleService.availableSchedule( potentialRoutes, departureDateTime )
 
 		def selectedFlights = flightSelectorService.selectedFlights(availableSchedules, departureDateTime, arrivalDateTime, departureAirport, arrivalAirport )		
 		

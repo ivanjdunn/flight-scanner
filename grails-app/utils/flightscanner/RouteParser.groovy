@@ -1,13 +1,9 @@
 package flightscanner
 
-import com.ryanair.AvailableFlight
 import com.ryanair.AvailableRoute
 import com.ryanair.Route
-
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-
-import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONElement
 
 @CompileStatic

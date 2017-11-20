@@ -3,7 +3,6 @@ package flightscanner
 import org.grails.web.json.JSONElement
 import com.ryanair.AvailableFlight
 import com.ryanair.Flight
-import flightscanner.ScheduleParser
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import java.time.LocalTime

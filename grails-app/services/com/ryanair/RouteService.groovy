@@ -1,7 +1,6 @@
 package com.ryanair
 
 import flightscanner.RouteParser
-import grails.gorm.transactions.Transactional
 import grails.plugins.rest.client.RestBuilder
 import grails.plugins.rest.client.RestResponse
 import groovy.transform.CompileDynamic
