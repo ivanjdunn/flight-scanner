@@ -44,27 +44,23 @@ public class RouteParser {
 
 
 	@CompileDynamic
-	static AvailableRoute availableRouteFromJSONElement(JSONElement json, String departureAirport, String arrivalAirport) {
+	static AvailableRoute availableRouteFromJSONElement(JSONElement jsonRoute, String departureAirport, String arrivalAirport) {
 
 		AvailableRoute availableRoute = new AvailableRoute()
 
-		if ( json ) {
+		availableRoute.routeList = []
 
-			availableRoute.routeList = []
+		for ( Object obj : jsonRoute ) {
 
-			// iterates for each route
-			for ( Object obj : json ) {
+			// identify direct and potential interconnected flights here, e.g. all flights to WRO or all flights from DUB
+			if ( obj.airportTo == arrivalAirport || obj.airportFrom == departureAirport ) {
 
-				// identify direct and potential interconnected flights here
-				if ( obj.airportTo == arrivalAirport || obj.airportFrom == departureAirport ) {
-
-					Route route = routeFromJsonElement(obj)
-					availableRoute.routeList << route
-				}
+				Route route = routeFromJsonElement(obj)
+				availableRoute.routeList << route
 			}
 		}
 
 		return availableRoute
 	}
-	
+
 }

@@ -46,7 +46,6 @@ class ScheduleParser {
 		availableFlight.arrivalAirport = route.airportTo
 
 
-
 		if ( json.days.flights ) {
 
 			availableFlight.flightList = []
@@ -61,7 +60,7 @@ class ScheduleParser {
 				if(dayOfFlight == dayOfInterest){
 					listOfFlights.each{
 
-						Flight flight = flightFromJsonElement(dayOfFlight, it)
+						Flight flight = flightFromJsonElement( dayOfFlight, it )
 						availableFlight.flightList << flight
 
 					}

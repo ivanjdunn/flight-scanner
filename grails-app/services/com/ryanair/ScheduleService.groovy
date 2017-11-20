@@ -26,6 +26,8 @@ class ScheduleService {
 			schedule << restBuilder(url, routeInstance, earliestDepartureDate.getDayOfMonth())
 		}
 
+		println schedule
+
 		return schedule - null
 
 	}
@@ -43,7 +45,7 @@ class ScheduleService {
 	}
 
 
-	def restBuilder(String url, Route route, def dayOfInterest) {
+	def restBuilder(String url, Route route, Integer dayOfInterest) {
 
 		RestBuilder rest = new RestBuilder()
 		RestResponse restResponse = rest.get(url)
