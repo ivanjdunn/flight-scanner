@@ -9,7 +9,7 @@ class ScheduleServiceSpec extends Specification implements ServiceUnitTest<Sched
     def baseUrl = "https://api.ryanair.com/timetable/3/schedules/"
 
 
-    @spock.lang.Unroll("A base Url, a route Object, flight year and flight month then return an expected URL")
+    @spock.lang.Unroll("A base Url, route Object, flight-year and flight-month returns an expected URL")
     def "validate url Builder"(){
 
         given: "A shared baseUrl"
