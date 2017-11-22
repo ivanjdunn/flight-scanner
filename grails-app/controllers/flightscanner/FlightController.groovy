@@ -13,30 +13,31 @@ import java.time.LocalDateTime
 
 @CompileStatic
 class FlightController {
-	static responseFormats = ['json', 'xml']
+    static responseFormats = ['json', 'xml']
 
 
-	RouteService routeService
-	ScheduleService scheduleService
-	FlightSelectorService flightSelectorService
+    RouteService routeService
+    ScheduleService scheduleService
+    FlightSelectorService flightSelectorService
 
-	@CompileDynamic
-	def index() {
+    @CompileDynamic
+    def index() {
 
-		LocalDateTime departureDateTime = LocalDateTime.parse( params.departureDateTime )
-		LocalDateTime arrivalDateTime = LocalDateTime.parse( params.arrivalDateTime )
+        LocalDateTime departureDateTime = LocalDateTime.parse(params.departureDateTime)
+        LocalDateTime arrivalDateTime = LocalDateTime.parse(params.arrivalDateTime)
 
-		Airport departureAirport = new Airport( params.departure )
-		Airport arrivalAirport = new Airport ( params.arrival )
+        Airport departureAirport = new Airport(params.departure)
+        Airport arrivalAirport = new Airport(params.arrival)
 
-		AvailableRoute availableRoutes = routeService.availableRoute( departureAirport, arrivalAirport )
-		List potentialRoutes = routeService.potentialRoute( availableRoutes.routeList, departureAirport, arrivalAirport )
+        AvailableRoute availableRoutes = routeService.availableRoute(departureAirport, arrivalAirport)
+        List potentialRoutes = routeService.potentialRoute(availableRoutes.routeList, departureAirport, arrivalAirport)
 
-		List availableSchedules = scheduleService.availableSchedule( potentialRoutes, departureDateTime )
+        List availableSchedules = scheduleService.availableSchedule(potentialRoutes, departureDateTime)
 
-		def selectedFlights = flightSelectorService.selectedFlights(availableSchedules, departureDateTime, arrivalDateTime, departureAirport, arrivalAirport )		
-		
-		render selectedFlights
+        def selectedFlights = flightSelectorService.selectFlights(availableSchedules, departureDateTime, arrivalDateTime, departureAirport, arrivalAirport)
 
-	}
+        render selectedFlights.toString()
+
+
+    }
 }
