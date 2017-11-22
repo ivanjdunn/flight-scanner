@@ -37,14 +37,17 @@
 * Implement Unit tests for Step 4
 
 # Running Tests
-./gradlew check
+./gradlew check or gradlew.bat check (Windows OS)
+
+Test report: <app>/build/reports/tests/index.html
 
 # Running Application
-./gradlew bootRun
+./gradlew bootRun or gradlew.bat bootRun
 
 ## Generating WAR
+./gradlew assemble or gradlew.bat assemble
 
-./gradlew assemble
+WAR location: <app>/build/build/libs/flightscanner-0.1.war
 
 
 Example endpoint: http://localhost:8080/flightscanner/interconnections?departure=DUB&arrival=STN&departureDateTime=2017-12-22T07:00&arrivalDateTime=2017-12-22T17:00
