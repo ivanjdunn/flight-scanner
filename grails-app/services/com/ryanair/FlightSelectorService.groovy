@@ -45,19 +45,18 @@ class FlightSelectorService {
 
         return indirectFlights
     }
-    
+
 
     def getTargetDirectFlights(def directFlight, LocalDateTime earliestDeparture, LocalDateTime latestArrival){
 
         def criteriaMatched = []
 
-        directFlight.flightList.each { flightListInstance ->
+        directFlight?.flightList.each { flightListInstance ->
 
             if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
 
                 def required = [leg1DepartureAirport: directFlight?.departureAirport, leg1ArivalAirport: directFlight?.arrivalAirport, leg1DepartureTime: flightListInstance?.departureTime,
-                                leg1ArrivalTime: flightListInstance?.arrivalTime,leg2DepartureAirport: null, leg2ArivalAirport: null,
-                                leg2DepartureTime: null, leg2ArrivalTime: null]
+                                leg1ArrivalTime: flightListInstance?.arrivalTime]
 
                 criteriaMatched << required
             }
@@ -74,7 +73,7 @@ class FlightSelectorService {
 
         flights.each { flight ->
 
-            flight.leg1.flightList.each { flightListInstance ->
+            flight?.leg1?.flightList.each { flightListInstance ->
 
                 if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
 
