@@ -9,15 +9,18 @@ class FlightSelectorService {
 
     def selectFlights(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival, Airport departureAirport, Airport arrivalAirport) {
 
-        //List directFlights = availableSchedule.findAll { it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
-        //def directFlight = availableSchedule.find { it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
 
+        def directFlight = availableSchedule.find { it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
         List indirectFlights = getIndirectFlights(availableSchedule, departureAirport, arrivalAirport)
-        def buildFlightCriteria = getTargetFlights(indirectFlights, earliestDeparture, latestArrival)
 
-        jsonFlightBuilder(buildFlightCriteria)
+
+        def buildFlightCriteria = getTargetFlights(indirectFlights, earliestDeparture, latestArrival)
+        def buildDirectFlightCriteria = getTargetDirectFlights(directFlight, earliestDeparture, latestArrival )
+
+       jsonFlightBuilder(buildDirectFlightCriteria + buildFlightCriteria)
 
     }
+
 
     def getIndirectFlights(List<AvailableFlight> availableSchedule, Airport departureAirport, Airport arrivalAirport) {
 
@@ -25,14 +28,6 @@ class FlightSelectorService {
 
         List leg1Listing = availableSchedule.findAll { it.departureAirport == departureAirport.getIataCode() }
         List leg2Listing = availableSchedule - leg1Listing
-
-        /*// find direct-Flight
-        def directFlight = availableSchedule.find{ it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
-        if (directFlight){
-
-            indirectFlights << new IndirectFlight(leg1: directFlight)
-
-        }*/
 
         // e.g. DUB - WRO
         leg1Listing.each { leg1 ->
@@ -49,6 +44,27 @@ class FlightSelectorService {
         }
 
         return indirectFlights
+    }
+    
+
+    def getTargetDirectFlights(def directFlight, LocalDateTime earliestDeparture, LocalDateTime latestArrival){
+
+        def criteriaMatched = []
+
+        directFlight.flightList.each { flightListInstance ->
+
+            if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
+
+                def required = [leg1DepartureAirport: directFlight?.departureAirport, leg1ArivalAirport: directFlight?.arrivalAirport, leg1DepartureTime: flightListInstance?.departureTime,
+                                leg1ArrivalTime: flightListInstance?.arrivalTime,leg2DepartureAirport: null, leg2ArivalAirport: null,
+                                leg2DepartureTime: null, leg2ArrivalTime: null]
+
+                criteriaMatched << required
+            }
+        }
+
+        return criteriaMatched
+
     }
 
 
@@ -79,8 +95,6 @@ class FlightSelectorService {
         } // end outer each
 
         return criteriaMatched
-
-
     }
 
 
@@ -92,12 +106,19 @@ class FlightSelectorService {
             jsonBuilder(
                     flightCriteria.collect { time ->
 
+                        def stops = 0
+                        def leg = [departureAirport: time.leg1DepartureAirport, arrivalAirport: time.leg1ArivalAirport, departureDateTime: LocalDate.now().atTime(time?.leg1DepartureTime).toString(), arrivalDateTime: LocalDate.now().atTime(time?.leg1ArrivalTime).toString()]
+
+
+                        if (time?.leg2DepartureAirport) {
+                            stops = 1
+                            leg = [[departureAirport: time.leg1DepartureAirport, arrivalAirport: time.leg1ArivalAirport, departureDateTime: LocalDate.now().atTime(time?.leg1DepartureTime).toString(), arrivalDateTime: LocalDate.now().atTime(time?.leg1ArrivalTime).toString()],
+                                   [departureAirport: time?.leg2DepartureAirport, arrivalAirport: time?.leg2ArivalAirport, departureDateTime: LocalDate.now().atTime(time?.leg2DepartureTime).toString(), arrivalDateTime: LocalDate.now().atTime(time?.leg2ArrivalTime).toString()]]
+                        }
+
                         [
-                                stops: 1,
-                                legs : [
-                                        [departureAirport: time.leg1DepartureAirport, arrivalAirport: time.leg1ArivalAirport, departureDateTime: LocalDate.now().atTime(time?.leg1DepartureTime).toString(), arrivalDateTime: LocalDate.now().atTime(time?.leg1ArrivalTime).toString()],
-                                        [departureAirport: time.leg2DepartureAirport, arrivalAirport: time.leg2ArivalAirport, departureDateTime: LocalDate.now().atTime(time?.leg2DepartureTime).toString(), arrivalDateTime: LocalDate.now().atTime(time?.leg2ArrivalTime).toString()]
-                                ]
+                                stops: stops,
+                                legs : leg
                         ]
 
                     }
