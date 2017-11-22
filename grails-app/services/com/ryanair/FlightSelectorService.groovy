@@ -2,94 +2,85 @@ package com.ryanair
 
 import java.time.LocalDateTime
 import java.time.LocalDate
-import grails.gorm.transactions.Transactional
 
-@Transactional
+
 class FlightSelectorService {
 
 
-	def selectedFlights(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival, Airport departureAirport, Airport arrivalAirport) {
+    def selectFlights(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival, Airport departureAirport, Airport arrivalAirport) {
 
-		// get direct flight
-		List directFlights = availableSchedule.findAll{ it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode()  }
-		//jsonFlightBuilder( directFlights, earliestDeparture, latestArrival )
+        List directFlights = availableSchedule.findAll { it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
 
-		//get indirect flights
-		List indirectFlights = []
-		List allIndirect = availableSchedule - directFlights
-		List leg1Listing = allIndirect.findAll { it.departureAirport == departureAirport.getIataCode() }
-		List leg2Listing = allIndirect - leg1Listing
+        List indirectFlights = getIndirectFlights(availableSchedule, departureAirport, arrivalAirport)
 
-		leg1Listing.each { leg1 ->
+        jsonFlightBuilder(directFlights, earliestDeparture, latestArrival)
 
-			leg2Listing.each { leg2 ->
+    }
 
-				if(leg1.arrivalAirport == leg2.departureAirport) {
+    def getIndirectFlights(List<AvailableFlight> availableSchedule, Airport departureAirport, Airport arrivalAirport) {
 
-					List bothLegs = []
+        List indirectFlights = []
 
-					List leg1List = []
-					leg1List << leg1
-					List leg2List = []
-					leg2List << leg2
+        List leg1Listing = availableSchedule.findAll { it.departureAirport == departureAirport.getIataCode() }
+        List leg2Listing = availableSchedule - leg1Listing
 
-					bothLegs << leg1List << leg2List
+        // e.g. DUB - WRO
+        leg1Listing.each { leg1 ->
 
-					indirectFlights << bothLegs
+            // e.g. WRO - STN
+            leg2Listing.each { leg2 ->
 
-				}
-			}
+                if (leg1.arrivalAirport == leg2.departureAirport && leg2.arrivalAirport == arrivalAirport.getIataCode()) {
 
-		} // end outer loop
+                    indirectFlights << new IndirectFlight(leg1: leg1, leg2: leg2)
 
-		List targetFlights = [] << directFlights << indirectFlights
+                }
+            }
+        }
 
-		jsonFlightBuilder( directFlights, earliestDeparture, latestArrival )
-
-	}
+        return indirectFlights
+    }
 
 
+    def jsonFlightBuilder(List flights, LocalDateTime earliestDeparture, LocalDateTime latestArrival) {
 
-	def jsonFlightBuilder(List flights, LocalDateTime earliestDeparture, LocalDateTime latestArrival ) {
+        new StringWriter().with { w ->
+            def jsonBuilder = new groovy.json.StreamingJsonBuilder(w)
 
-		new StringWriter().with { w ->
-			def jsonBuilder = new groovy.json.StreamingJsonBuilder(w)
+            flights.each { flight ->
 
-			flights.each { flight ->
+                def criteriaMatched = []
 
-				def criteriaMatched = []
+                flight.flightList.each { flightListInstance ->
 
-				flight.flightList.each { flightListInstance ->
+                    if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
 
-					if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
+                        criteriaMatched << flightListInstance
 
-						criteriaMatched << flightListInstance
+                    }
+                }
 
-					}
-				}
+                jsonBuilder(
+                        criteriaMatched.collect { time ->
 
-				jsonBuilder(
-						criteriaMatched.collect { time ->
+                            [
+                                    stops: 0,
+                                    legs : [
+                                            departureAirport: flight?.departureAirport,
+                                            arrivalAirport: flight?.arrivalAirport,
+                                            departureDateTime: LocalDate.now().atTime(time?.departureTime).toString(),
+                                            arrivalDateTime: LocalDate.now().atTime(time?.arrivalTime).toString()
 
-							[
-									stops: 0,
-									legs : [
-											departureAirport : flight?.departureAirport,
-											arrivalAirport   : flight?.arrivalAirport,
-											departureDateTime: LocalDate.now().atTime(time?.departureTime).toString(),
-											arrivalDateTime  : LocalDate.now().atTime(time?.arrivalTime).toString()
+                                    ]
+                            ]
+                        }
+                )
 
-									]
-							]
-						}
-				)
+            }
+            return w
+        }
 
-			}
-			return w.toString()
-		}
-
-	}
-
+    }
 
 
 }
