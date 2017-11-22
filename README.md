@@ -44,7 +44,7 @@ Test report: /build/reports/tests/index.html
 # Running Application
 ./gradlew bootRun or gradlew.bat bootRun
 
-## Generating WAR
+# Generating WAR
 ./gradlew assemble or gradlew.bat assemble
 
 WAR location: /build/libs/flightscanner-0.1.war
