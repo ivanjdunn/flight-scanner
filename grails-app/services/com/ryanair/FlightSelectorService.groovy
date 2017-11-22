@@ -7,22 +7,21 @@ import java.time.LocalDate
 class FlightSelectorService {
 
 
-    def selectFlights(List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival, Airport departureAirport, Airport arrivalAirport) {
+    def selectFlights( List<AvailableFlight> availableSchedule, LocalDateTime earliestDeparture, LocalDateTime latestArrival, Airport departureAirport, Airport arrivalAirport ) {
 
 
-        def directFlight = availableSchedule.find { it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
-        List indirectFlights = getIndirectFlights(availableSchedule, departureAirport, arrivalAirport)
+        AvailableFlight directFlight = availableSchedule.find { it.departureAirport == departureAirport.getIataCode() && it.arrivalAirport == arrivalAirport.getIataCode() }
+        List indirectFlights = getIndirectFlights( availableSchedule, departureAirport, arrivalAirport )
 
+        List buildIndirectFlightCriteria = getTargetIndirectFlights( indirectFlights, earliestDeparture, latestArrival )
+        List buildDirectFlightCriteria = getTargetDirectFlights( directFlight, earliestDeparture, latestArrival )
 
-        def buildFlightCriteria = getTargetFlights(indirectFlights, earliestDeparture, latestArrival)
-        def buildDirectFlightCriteria = getTargetDirectFlights(directFlight, earliestDeparture, latestArrival )
-
-       jsonFlightBuilder(buildDirectFlightCriteria + buildFlightCriteria)
+       jsonFlightBuilder( buildDirectFlightCriteria + buildIndirectFlightCriteria )
 
     }
 
 
-    def getIndirectFlights(List<AvailableFlight> availableSchedule, Airport departureAirport, Airport arrivalAirport) {
+    List getIndirectFlights( List<AvailableFlight> availableSchedule, Airport departureAirport, Airport arrivalAirport ) {
 
         List indirectFlights = []
 
@@ -47,18 +46,18 @@ class FlightSelectorService {
     }
 
 
-    def getTargetDirectFlights(def directFlight, LocalDateTime earliestDeparture, LocalDateTime latestArrival){
+    List getTargetDirectFlights( def directFlight, LocalDateTime earliestDeparture, LocalDateTime latestArrival ){
 
-        def criteriaMatched = []
+        List criteriaMatched = []
 
         directFlight?.flightList.each { flightListInstance ->
 
-            if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
+            if ( flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime()) ) {
 
-                def required = [leg1DepartureAirport: directFlight?.departureAirport, leg1ArivalAirport: directFlight?.arrivalAirport, leg1DepartureTime: flightListInstance?.departureTime,
+                def requiredFlights = [leg1DepartureAirport: directFlight?.departureAirport, leg1ArivalAirport: directFlight?.arrivalAirport, leg1DepartureTime: flightListInstance?.departureTime,
                                 leg1ArrivalTime: flightListInstance?.arrivalTime]
 
-                criteriaMatched << required
+                criteriaMatched << requiredFlights
             }
         }
 
@@ -67,31 +66,31 @@ class FlightSelectorService {
     }
 
 
-    def getTargetFlights(List flights, LocalDateTime earliestDeparture, LocalDateTime latestArrival){
+    List getTargetIndirectFlights( List flights, LocalDateTime earliestDeparture, LocalDateTime latestArrival ){
 
-        def criteriaMatched = []
+        List criteriaMatched = []
 
         flights.each { flight ->
 
             flight?.leg1?.flightList.each { flightListInstance ->
 
-                if (flightListInstance?.departureTime.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
+                if (flightListInstance?.departureTime?.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
 
-                    // find suitable leg2 flight - leaves 2 hours after leg1 flight lands and leg2 arrives within the time boundaries
-                    def findSuitableLeg2Flight = flight.leg2?.flightList.find { it.departureTime.isAfter(flightListInstance?.departureTime.plusHours(2L)) && it.arrivalTime.isBefore(latestArrival.toLocalTime())}
+                    // find suitable leg2 flight: leaves 2 hours after leg1 flight lands and leg2 arrives within the time boundaries
+                    def findSuitableLeg2Flight = flight.leg2?.flightList.find { it.departureTime?.isAfter(flightListInstance?.departureTime?.plusHours(2L)) && it.arrivalTime?.isBefore(latestArrival.toLocalTime())}
 
                     if (findSuitableLeg2Flight) {
 
-                        def required = [leg1DepartureAirport: flight.leg1?.departureAirport, leg1ArivalAirport: flight.leg1?.arrivalAirport, leg1DepartureTime: flightListInstance?.departureTime,
+                        def requiredFlight = [leg1DepartureAirport: flight.leg1?.departureAirport, leg1ArivalAirport: flight.leg1?.arrivalAirport, leg1DepartureTime: flightListInstance?.departureTime,
                                         leg1ArrivalTime: flightListInstance?.arrivalTime, leg2DepartureAirport: flight.leg2?.departureAirport, leg2ArivalAirport: flight.leg2?.arrivalAirport,
                                         leg2DepartureTime: findSuitableLeg2Flight?.departureTime, leg2ArrivalTime: findSuitableLeg2Flight?.arrivalTime]
 
 
-                        criteriaMatched << required
+                        criteriaMatched << requiredFlight
                     }
                 }
             }
-        } // end outer each
+        }
 
         return criteriaMatched
     }
@@ -99,8 +98,8 @@ class FlightSelectorService {
 
     def jsonFlightBuilder(def flightCriteria) {
 
-        new StringWriter().with { w ->
-            def jsonBuilder = new groovy.json.StreamingJsonBuilder(w)
+        new StringWriter().with { writer ->
+            def jsonBuilder = new groovy.json.StreamingJsonBuilder(writer)
 
             jsonBuilder(
                     flightCriteria.collect { time ->
@@ -119,13 +118,11 @@ class FlightSelectorService {
                                 stops: stops,
                                 legs : leg
                         ]
-
                     }
             )
 
-            return w
+            return writer
         }
-
     }
 
 
