@@ -77,7 +77,7 @@ class FlightSelectorService {
                 if (flightListInstance?.departureTime?.isAfter(earliestDeparture.toLocalTime()) && flightListInstance?.arrivalTime.isBefore(latestArrival.toLocalTime())) {
 
                     // find suitable leg2 flight: leaves 2 hours after leg1 flight lands and leg2 arrives within the time boundaries
-                    def findSuitableLeg2Flight = flight.leg2?.flightList.find { it.departureTime?.isAfter(flightListInstance?.departureTime?.plusHours(2L)) && it.arrivalTime?.isBefore(latestArrival.toLocalTime())}
+                    def findSuitableLeg2Flight = flight.leg2?.flightList.find { it.departureTime?.isAfter(flightListInstance?.arrivalTime?.plusHours(2L)) && it.arrivalTime?.isBefore(latestArrival.toLocalTime())}
 
                     if (findSuitableLeg2Flight) {
 
