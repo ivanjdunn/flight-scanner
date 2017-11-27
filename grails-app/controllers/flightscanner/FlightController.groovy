@@ -36,7 +36,7 @@ class FlightController {
 
         def selectedFlights = flightSelectorService.selectFlights(availableSchedules, departureDateTime, arrivalDateTime, departureAirport, arrivalAirport)
 
-        render selectedFlights.toString()
+        render ( contentType: "application/json", selectedFlights.toString() )
 
 
     }
